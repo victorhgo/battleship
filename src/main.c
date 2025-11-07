@@ -6,10 +6,12 @@ int main(){
     char board[ROWS][COLS];
     char option;
 
+    printf("%d is selected", chooseDifficulty());
+
     do {
         system("clear");
-        newSeed(board);
-        drawBoard(board, true); // false: show ships for debug
+        newSeed(board, 1);
+        drawBoard(board, false); // false: show ships for debug
         printf("Press (S) to sort again\n");
         printf("Press (P) to play the game\n");
         printf("Press (E) to exit\n>>> ");

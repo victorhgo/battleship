@@ -18,8 +18,8 @@
 #define COLS 10
 
 /* Ship Length */
-#define NUM_SHIPS 3
-static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 2};
+#define NUM_SHIPS 8
+static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 3, 2, 2, 1};
 
 /* Symbols used in the game */
 #define SHIP   '<'
@@ -27,22 +27,28 @@ static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 2};
 #define MISS   'o'
 #define EMPTY  ' '
 
+#define EASY 1
+#define MEDIUM 2
+#define HARD 3
+
 /* Function Prototypes */
 
 /* Draw the board */
 void drawBoard(char (*matrix)[COLS], bool hideShips);
 
 /* Randomize numbers based on seed */
-void newSeed(char (*matrix)[COLS]);
+void newSeed(char (*matrix)[COLS], int difficulty);
 
 /* Convert column char to column int */
-unsigned mapColumns(char *col); 
+unsigned mapColumns(const char *col); 
 
 /* Show current game score */
 void showScore(unsigned *hit, unsigned *misses);
 
 /* Play the game */
 void playGame(char (*board)[COLS]); 
-/* char gameOver(char sort); - Future Function*/
+
+/* Difficult level selection */
+int chooseDifficulty();
 
 #endif
