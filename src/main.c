@@ -5,24 +5,31 @@
 int main(){
     char board[ROWS][COLS];
     char option;
-
-    printf("%d is selected", chooseDifficulty());
+    short difficulty = chooseDifficulty();
 
     do {
         system("clear");
-        newSeed(board, 1);
+        newSeed(board, difficulty);
         drawBoard(board, false); // false: show ships for debug
         printf("Press (S) to sort again\n");
         printf("Press (P) to play the game\n");
+        printf("Press (D) to change difficult\n");
         printf("Press (E) to exit\n>>> ");
         scanf(" %c", &option);
-    } while (tolower(option) == 's');
 
-    if (tolower(option) == 'p') {
-        system("clear");
-        playGame(board);
-    }
+        if (tolower(option) == 'e'){
+            printf("Exiting game...\n");
+            return 0;
+        }
 
-    printf("Exiting game...\n");
-    return 0;
+        if (tolower(option) == 'd'){
+            difficulty = chooseDifficulty();
+        }
+
+        if (tolower(option) == 'p') {
+            system("clear");
+            playGame(board, difficulty);
+        }
+
+    } while (tolower(option) != 'e');
 }

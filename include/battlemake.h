@@ -13,15 +13,9 @@
 /* Some constants */
 #define BATTLEMAKE_H
 
-/* Draw the board with ROWS x COWS */
 #define ROWS 8
 #define COLS 10
 
-/* Ship Length */
-#define NUM_SHIPS 8
-static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 3, 2, 2, 1};
-
-/* Symbols used in the game */
 #define SHIP   '<'
 #define HIT    '*'
 #define MISS   'o'
@@ -36,8 +30,25 @@ static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 3, 2, 2, 1};
 /* Draw the board */
 void drawBoard(char (*matrix)[COLS], bool hideShips);
 
-/* Randomize numbers based on seed */
-void newSeed(char (*matrix)[COLS], int difficulty);
+/* Randomize numbers based on seed - To be refactored */
+void newSeed(char (*matrix)[COLS], short difficulty);
+
+/* First step - clearBoard as a separate function - Done */
+void clearBoard(char (*matrix)[COLS]);
+
+/* Second step - getShipConfig as a separate function to:
+
+This function needs to get the difficult level and also each ship placement:
+
+This is the following we have:
+
+medium[] = {4, 3, 2, 2, 1};
+hard[]   = {3, 2, 2, 1, 1};
+easy[]   = {4, 3, 3, 2, 2, 2};
+
+
+Returns the number of ships for each setting
+*/
 
 /* Convert column char to column int */
 unsigned mapColumns(const char *col); 
@@ -46,9 +57,9 @@ unsigned mapColumns(const char *col);
 void showScore(unsigned *hit, unsigned *misses);
 
 /* Play the game */
-void playGame(char (*board)[COLS]); 
+void playGame(char (*board)[COLS], short difficulty); 
 
 /* Difficult level selection */
-int chooseDifficulty();
+short chooseDifficulty();
 
 #endif

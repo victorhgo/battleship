@@ -44,37 +44,17 @@ void drawBoard(char (*matrix)[COLS], bool hideShips){
     putchar('\n');
 }
 
-/* This function will generate random numbers - Old version, works great */
-
-// void newSeed(char (*matrix)[COLS]){
-//     long capture;
-//     time(&capture);             /* Based on the OS clock (seconds), we will generate a random seed */
-//     srand((unsigned)capture);    /* that will use the srand() function */
-
-//     for (int i = 0; i < ROWS; i++){
-//         for(int j = 0; j < COLS; j++){
-//             unsigned num = rand()%100+1; /* To generate 10 random numbers using the rand() function */
-            
-//             if(num % 2){            /* if odd - write the ship */
-//                 matrix[i][j] = '<';
-//             } else {                /* if even - empty position (0x20 is empty space)*/
-//                 matrix[i][j] = 0x20; 
-//             }
-//         }
-//     }
-// }
-
 /* Difficulty Select */
-int chooseDifficulty(){
+short chooseDifficulty(){
     char choice;
     int level = 0;
 
     while (level == 0){
         system("clear");
         printf("--- Select Difficulty Level ---\n");
-        printf("[E] Easy\n");
-        printf("[M] Medium\n");
-        printf("[H] Hard\n");
+        printf("[E] Easy - More ships and more shots\n");
+        printf("[M] Medium - Fewer ships and shots\n");
+        printf("[H] Hard - Ships are smaller and only 5 misses allowed.\n");
         printf(">>> ");
         scanf(" %c", &choice);
 
@@ -89,21 +69,59 @@ int chooseDifficulty(){
     return level;
 }
 
-/* Refactoring Random seed to ensure no ship overlaps - Under tests...
-- not working as good as previous one, but at least it prevents overlaps */
-void newSeed(char (*matrix)[COLS], int difficulty){
-    //srand(time(NULL));
-    srand(0); // debug purposes only
-    /* Clear the board */
+/* First step - clearBoard as a separate function */
+void clearBoard(char (*matrix)[COLS]){
+    /* Clear the board - Can be a new function*/
     for (int row = 0; row < ROWS; row++)
         for (int col = 0; col < COLS; col++)
-            matrix[row][col] = EMPTY;
+            matrix[row][col] = EMPTY;   
+}
 
-    /* Set difficulty */
+/* Refactoring Random seed to ensure no ship overlaps - Under tests...
+- not working as good as previous one, but at least it prevents overlaps */
+void newSeed(char (*matrix)[COLS], short difficulty){
+    srand(time(NULL));
+    //srand(0); // debug purposes only
+
+    clearBoard(matrix);
+
+    /* Set difficulty - To be a different function and refactor it */
+    int numShips,
+        shipSizes[100];
+
+    switch (difficulty){
+        case EASY:
+            int easySizes[] = {4, 3, 3, 2, 2, 2};
+            numShips = 6;
+
+            for (int ship = 0; ship < numShips; ship++){
+                shipSizes[ship] = easySizes[ship];
+            }
+            break;
+
+        case MEDIUM:
+            int mediumSizes[] = {4, 3, 2, 2, 1};
+            numShips = 5;
+
+            for (int ship = 0; ship < numShips; ship++){
+                shipSizes[ship] = mediumSizes[ship];
+            }
+
+            break;
+        
+        case HARD:
+            int hardSizes[] = {3, 2, 2, 1, 1};
+            numShips = 5;
+
+            for (int ship = 0; ship < numShips; ship++){
+                shipSizes[ship] = hardSizes[ship];
+            }
+            break;
+    }
     
-    /* To place each ship */
-    for (int ship = 0; ship < NUM_SHIPS; ship++) {
-        int size = SHIP_SIZES[ship];
+    /* To place each ship - Will also be a separate function */
+    for (int ship = 0; ship < numShips; ship++) {
+        int size = shipSizes[ship];
         int placed = 0;
 
         while (!placed) {
@@ -113,24 +131,41 @@ void newSeed(char (*matrix)[COLS], int difficulty){
 
             int fits = 1;
             if (horizontal) {
-                if (col + size > COLS) fits = 0;
+                if (col + size > COLS){
+                    fits = 0;
+                }
+
                 else {
-                    for (int i = 0; i < size; i++)
-                        if (matrix[row][col + i] != EMPTY) fits = 0;
+                    for (int i = 0; i < size; i++) {
+                        if (matrix[row][col + i] != EMPTY) {
+                            fits = 0;
+                        }
+
+                    }
                 }
             } else {
-                if (row + size > ROWS) fits = 0;
+                if (row + size > ROWS) {
+                    fits = 0;
+                }
                 else {
-                    for (int i = 0; i < size; i++)
-                        if (matrix[row + i][col] != EMPTY) fits = 0;
+                    for (int i = 0; i < size; i++) {
+                        if (matrix[row + i][col] != EMPTY) {
+                            fits = 0;
+                        }
+                    }
                 }
             }
 
             if (fits) {
                 for (int i = 0; i < size; i++) {
-                    if (horizontal) matrix[row][col + i] = SHIP;
-                    else matrix[row + i][col] = SHIP;
+                    if (horizontal) {
+                        matrix[row][col + i] = SHIP;
+                    }
+                    else {
+                        matrix[row + i][col] = SHIP;
+                    }
                 }
+                
                 placed = 1;
             }
         }
@@ -148,13 +183,16 @@ void showScore(unsigned *hit, unsigned *misses){
 }
 
 /* Function to play the game - implementation in progress */
-void playGame(char (*board)[COLS]) {
-    unsigned hit = 0, miss = 0;
+void playGame(char (*board)[COLS], short difficulty) {
+    unsigned hit = 0, miss = 0,
+             maxMiss = (difficulty == EASY? 10 : difficulty == MEDIUM? 6 : 5),
+             shipsLeft = (difficulty == EASY? 16 : difficulty == MEDIUM? 12 : 9),
+             row;
+
     char col;
-    unsigned row;
 
     while (1) {
-        drawBoard(board, true);
+        drawBoard(board, false);
         showScore(&hit, &miss);
 
         printf("Enter a position to shot >>> ");
@@ -167,9 +205,11 @@ void playGame(char (*board)[COLS]) {
         }
 
         char *cell = &board[row - 1][c];
+
         if (*cell == SHIP) {
             *cell = HIT;
             hit++;
+            shipsLeft--;
             putchar('\a');
         } else if (*cell == EMPTY) {
             *cell = MISS;
@@ -177,13 +217,13 @@ void playGame(char (*board)[COLS]) {
             putchar('\a');
         }
 
-        // Win or lose condition
-        if (hit == 9) {
-            printf("You won!\n");
+        /* Win condition: no ship left. Lose condition depends on difficulty*/
+        if (shipsLeft == 0){
+            printf("Congratulations! You won :)\n");
             break;
         }
-        if (miss >= 10) {
-            printf("Game over! You lost!\n");
+        if (miss >= maxMiss){
+            printf("Game over! You lost :C\n");
             break;
         }
     }
