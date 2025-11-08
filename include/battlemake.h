@@ -1,7 +1,4 @@
 #ifndef BATTLEMAKE_H
-/* This file will be called by gcc using the flag -I. 
--Iinclude to tell gcc to look at include folder
-*/
 
 /* Including the required libs */
 #include <stdio.h>
@@ -10,39 +7,44 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-/* Some constants */
+/* Some constants definitions */
 #define BATTLEMAKE_H
 
-/* Draw the board with ROWS x COWS */
 #define ROWS 8
 #define COLS 10
 
-/* Ship Length */
-#define NUM_SHIPS 3
-static const int SHIP_SIZES[NUM_SHIPS] = {4, 3, 2};
-
-/* Symbols used in the game */
 #define SHIP   '<'
 #define HIT    '*'
 #define MISS   'o'
 #define EMPTY  ' '
 
-/* Function Prototypes */
+#define EASY 1
+#define MEDIUM 2
+#define HARD 3
 
-/* Draw the board */
+/* --- board.c - Functions to draw and manage the game board --- */
+
 void drawBoard(char (*matrix)[COLS], bool hideShips);
-
-/* Randomize numbers based on seed */
-void newSeed(char (*matrix)[COLS]);
-
-/* Convert column char to column int */
-unsigned mapColumns(char *col); 
-
-/* Show current game score */
+void clearBoard(char (*matrix)[COLS]);
+void pressEnterToContinue(void);
+unsigned mapColumns(const char *col); 
 void showScore(unsigned *hit, unsigned *misses);
 
-/* Play the game */
-void playGame(char (*board)[COLS]); 
-/* char gameOver(char sort); - Future Function*/
+/* --- ships.c - Helper functions to place ships ramdomly across the battlefield --- */
+
+int getShipConfig(short difficulty, int *shipSizes);
+int canPlaceShip(char (*matrix)[COLS], int row, int col, int size, int horizontal);
+void placeShip(char (*matrix)[COLS], int row, int col, int size, int horizontal);
+
+/* --- game.c - Functions to play the game (select difficult, generate seed) --- */
+
+short chooseDifficulty();
+void newSeed(char (*matrix)[COLS], short difficulty);
+void welcomeMenu(void);
+void playGame(char (*board)[COLS], short difficulty); 
+
+/* --- main.c - main function --- */
+
+void loopPlay(short difficulty);
 
 #endif
