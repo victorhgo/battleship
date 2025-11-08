@@ -1,8 +1,8 @@
 /* Include battlemake.h which contains all functions prototypes */
 #include "battlemake.h"
 
-/* Difficulty Select */
 short chooseDifficulty(){
+    /* Select the difficulty level. */
     char choice;
     int level = 0;
 
@@ -27,6 +27,8 @@ short chooseDifficulty(){
 }
 
 void newSeed(char (*matrix)[COLS], short difficulty){
+    /* Places a ship randomly on the board using the difficult level
+    to determine the amount of ships on the board */
     srand(time(NULL));
     // srand(time(0)) // for debug purposes only
 
@@ -53,8 +55,9 @@ void newSeed(char (*matrix)[COLS], short difficulty){
     }
 }
 
-/* Welcome menu */
 void welcomeMenu() {
+    /* Welcome menu includes information such as instructions and
+    to choose to play it.*/
     char option;
 
     while (1) {
@@ -101,8 +104,8 @@ void welcomeMenu() {
     }
 }
 
-/* Function to play the game - implementation in progress */
 void playGame(char (*board)[COLS], short difficulty) {
+    /* Helper function to main loop gameplay - In progress... */
     unsigned hit = 0, miss = 0,
              maxMiss = (difficulty == EASY? 10 : difficulty == MEDIUM? 6 : 5),
              shipsLeft = (difficulty == EASY? 16 : difficulty == MEDIUM? 12 : 9),

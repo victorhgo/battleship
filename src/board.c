@@ -1,8 +1,12 @@
 /* Include battlemake.h which contains all functions prototypes */
 #include "battlemake.h"
 
-/* drawBoard */
 void drawBoard(char (*matrix)[COLS], bool hideShips){
+    /* Draw the game board on the console 
+    Assumes:
+        matrix: the 2D array, battlefield
+        hideShips - true - hide ships positions
+                    false - show ships for debug*/
     putchar('\n');
 
     /* Draw the Header row (A to J)*/
@@ -45,24 +49,24 @@ void drawBoard(char (*matrix)[COLS], bool hideShips){
 }
 
 void clearBoard(char (*matrix)[COLS]){
-    /* Clear the board - Can be a new function*/
+    /* Clear the board - setting everything to EMPTY*/
     for (int row = 0; row < ROWS; row++)
         for (int col = 0; col < COLS; col++)
             matrix[row][col] = EMPTY;   
 }
 
-/* Convert the column char to int for matrix index */
 unsigned mapColumns(const char *col){
+    /* Converts the column char to int for matrix index */
     return toupper(*col) - 'A';
 }
 
-/* Show's the score for each game */
 void showScore(unsigned *hit, unsigned *misses){
+    /* Displays the current hit and miss counters on screen */
 	printf("Targets hit: %d | Missed Shots: %d\n", *hit, *misses);
 }
 
-/* Cross-platform "Press ENTER to continue" */
 void pressEnterToContinue(void){
+    /* Cross-platform "Press ENTER to continue" */
     int c;
 
     /* Sanitizer to clear leftover characters */

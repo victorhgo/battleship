@@ -2,8 +2,10 @@
 #include "battlemake.h"
 
 int getShipConfig(short difficulty, int *shipSizes){
-/* Assumes difficulty and shipSizes to be integers numbers
-Returns the number of ships as an integer */
+    /* Assumes difficulty and shipSizes to be integers numbers.
+    
+    Returns the number of ships as an integer based on difficult level */
+
     static const int easy[]   = {4, 3, 3, 2, 2, 2};
     static const int medium[] = {4, 3, 2, 2, 1};
     static const int hard[]   = {3, 2, 2, 1, 1};
@@ -34,8 +36,16 @@ Returns the number of ships as an integer */
 }
 
 int canPlaceShip(char (*matrix)[COLS], int row, int col, int size, int horizontal) {
-/* Check whether the ship can be placed on horizontal or vertical 
-Returns 1 if true, 0 otherwise*/
+    /* Check whether the ship can be placed on horizontal or vertical positions
+    Assumes:
+            matrix: the 2D array, battlefield
+            row: starting row position
+            col: starting column position.
+            size: size (length) of the ship.
+            horizontal: 1 if the ship will be placed horizontally, 0 if vertically.
+            
+    Returns:
+            1 if the placement is valid, 0 otherwise. */
     if (horizontal){
         if (col + size > COLS){
             return 0;
@@ -59,7 +69,15 @@ Returns 1 if true, 0 otherwise*/
 }
 
 void placeShip(char (*matrix)[COLS], int row, int col, int size, int horizontal){
-/* Places a ship in the spot */
+    /* Places a ship of size on the board at the specified position (row, col).
+        Assumes:
+                matrix: the 2D array, battlefield
+                row: starting row position
+                col: starting column position.
+                size: size (length) of the ship.
+
+                horizontal: 1 if the ship will be placed horizontally, 0 if vertically. */
+
     for (int place = 0; place < size; place++){
         if (horizontal) {
             matrix[row][col + place] = SHIP;

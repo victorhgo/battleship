@@ -3,21 +3,26 @@
 #include "battlemake.h"
 
 int main(void) {
+    /* Main function - Sets difficulty to EASY to start the main loop gameplay */
     short difficulty = EASY;
 
     welcomeMenu();
     loopPlay(difficulty);
+    
     return 0;
 }
 
 void loopPlay(short difficulty) {
+    /* Main game loop to be displayed after the welcome menu.
+    This function helps on placing ships, playing the game, or change difficulty
+    Runs repeatedly until exit */
     char board[ROWS][COLS];
     char option;
 
     do {
         system("clear");
         newSeed(board, difficulty);
-        drawBoard(board, true); // false = show ships for debug
+        drawBoard(board, false); // false = show ships for debug
         printf("Press (S) to sort again\n");
         printf("Press (P) to play the game\n");
         printf("Press (D) to change difficulty\n");
