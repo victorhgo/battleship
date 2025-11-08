@@ -2,27 +2,34 @@
 /* Include battlemake.h which contains all functions prototypes */
 #include "battlemake.h"
 
-int main(){
+int main(void) {
+    short difficulty = EASY;
+
+    welcomeMenu();
+    loopPlay(difficulty);
+    return 0;
+}
+
+void loopPlay(short difficulty) {
     char board[ROWS][COLS];
     char option;
-    short difficulty = chooseDifficulty();
 
     do {
         system("clear");
         newSeed(board, difficulty);
-        drawBoard(board, false); // false: show ships for debug
+        drawBoard(board, true); // false = show ships for debug
         printf("Press (S) to sort again\n");
         printf("Press (P) to play the game\n");
-        printf("Press (D) to change difficult\n");
+        printf("Press (D) to change difficulty\n");
         printf("Press (E) to exit\n>>> ");
         scanf(" %c", &option);
 
-        if (tolower(option) == 'e'){
+        if (tolower(option) == 'e') {
             printf("Exiting game...\n");
-            return 0;
+            exit(0);
         }
 
-        if (tolower(option) == 'd'){
+        if (tolower(option) == 'd') {
             difficulty = chooseDifficulty();
         }
 
