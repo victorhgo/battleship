@@ -34,12 +34,12 @@ void newSeed(char (*matrix)[COLS], short difficulty){
 
     clearBoard(matrix);
 
-    int shipSizes[10];
+    unsigned shipSizes[10];
     int numShips = getShipConfig(difficulty, shipSizes);
 
     for (int ship = 0; ship < numShips; ship++) {
         int placed = 0;
-        int size = shipSizes[ship];
+        unsigned size = shipSizes[ship];
 
         while(!placed){
             int row = rand() % ROWS;
@@ -74,8 +74,7 @@ void welcomeMenu() {
         scanf(" %c", &option);
 
         if (option == '3' || tolower(option) == 'e') {
-            printf("Exiting game...\n");
-            exit(0);
+            exitMsg();
         }
 
         if (option == '2' || tolower(option) == 'h') {
@@ -104,10 +103,24 @@ void welcomeMenu() {
     }
 }
 
+void selectionMenu(){
+    /* Selection menu */
+    printf("Press (S) to sort ships\n");
+    printf("Press (P) to play the game\n");
+    printf("Press (D) to change difficulty\n");
+    printf("Press (E) to exit\n>>> ");
+}
+
+void exitMsg(){
+    /* Exhibits a exit message and terminates the program */
+    printf("Exiting game...\n");
+    exit(0);
+}
+
 void playGame(char (*board)[COLS], short difficulty) {
     /* Helper function to main loop gameplay - In progress... */
     unsigned hit = 0, miss = 0,
-             maxMiss = (difficulty == EASY? 10 : difficulty == MEDIUM? 6 : 5),
+             maxMiss = (difficulty == EASY? 27 : difficulty == MEDIUM? 16 : 12),
              shipsLeft = (difficulty == EASY? 16 : difficulty == MEDIUM? 12 : 9),
              row;
 
@@ -152,4 +165,34 @@ void playGame(char (*board)[COLS], short difficulty) {
             break;
         }
     }
+}
+
+void loopPlay(short difficulty) {
+    /* Main game loop to be displayed after the welcome menu.
+    This function helps on placing ships, playing the game, or change difficulty
+    Runs repeatedly until exit */
+    char board[ROWS][COLS];
+    char option;
+
+    do {
+        system("clear");
+        newSeed(board, difficulty);
+        drawBoard(board, true); // false = show ships for debug
+        selectionMenu();
+        scanf(" %c", &option);
+
+        if (tolower(option) == 'e') {
+            exitMsg();
+        }
+
+        if (tolower(option) == 'd') {
+            difficulty = chooseDifficulty();
+        }
+
+        if (tolower(option) == 'p') {
+            system("clear");
+            playGame(board, difficulty);
+        }
+
+    } while (tolower(option) != 'e');
 }

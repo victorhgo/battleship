@@ -7,6 +7,7 @@ CFLAGS := -Wall -Wextra -std=c11 -Iinclude
 
 # Directories
 SRC_DIR := src
+BLD_DIR := build
 OBJ_DIR := build/objects
 BIN_DIR := build/bin
 ASM_DIR := build/asm
@@ -25,19 +26,29 @@ all: $(TARGET)
 # Default target + asm
 # all: $(TARGET) asm
 
-# Link object files into final binary
-$(TARGET): $(OBJ)
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $@ $^ 
-
 # Compile .c to .o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Link object files into final binary
+$(TARGET): $(OBJ) | $(BIN_DIR)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# Directory creation rules
+$(BLD_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR):
+	mkdir -p $@
+
+$(BIN_DIR):
+	mkdir -p $@
+
+$(ASM_DIR):
+	mkdir -p $@
 
 # Generate assembly .s files
 $(ASM_DIR)/%.s: $(SRC_DIR)/%.c | $(ASM_DIR)
-	@mkdir -p $(ASM_DIR)
 	$(CC) $(CFLAGS) -S $< -o $@
 
 # Build all assembly files
@@ -45,7 +56,7 @@ asm: $(ASM)
 
 # Clean generated files
 clean:
-	rm -rf $(OBJ_DIR)/*.o $(BIN_DIR)/* $(ASM_DIR)/*.s
+	rm -rf $(BLD_DIR)
 
 # Rebuild from scratch
 rebuild: clean all
