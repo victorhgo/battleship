@@ -32,7 +32,7 @@ void showScore(unsigned *hit, unsigned *misses);
 
 /* --- ships.c - Helper functions to place ships ramdomly across the battlefield --- */
 
-int getShipConfig(short difficulty, int *shipSizes);
+int getShipConfig(short difficulty, unsigned *shipSizes);
 int canPlaceShip(char (*matrix)[COLS], int row, int col, int size, int horizontal);
 void placeShip(char (*matrix)[COLS], int row, int col, int size, int horizontal);
 
@@ -41,10 +41,9 @@ void placeShip(char (*matrix)[COLS], int row, int col, int size, int horizontal)
 short chooseDifficulty();
 void newSeed(char (*matrix)[COLS], short difficulty);
 void welcomeMenu(void);
+void selectionMenu(void);
+void exitMsg(void);
 void playGame(char (*board)[COLS], short difficulty); 
-
-/* --- main.c - main function --- */
-
 void loopPlay(short difficulty);
 
 #endif

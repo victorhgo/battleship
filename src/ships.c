@@ -1,7 +1,7 @@
 /* Include battlemake.h which contains all functions prototypes */
 #include "battlemake.h"
 
-int getShipConfig(short difficulty, int *shipSizes){
+int getShipConfig(short difficulty, unsigned *shipSizes){
     /* Assumes difficulty and shipSizes to be integers numbers.
     
     Returns the number of ships as an integer based on difficult level */
